@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CalorieAI – AI Food Calorie Estimator</title>
+<title>Snap2Nutri – Food Calorie Estimator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Lora:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -65,7 +65,7 @@ footer{padding:26px 56px;border-top:1px solid var(--line);font-size:.85rem;color
 <body>
 <section class="hero">
   <header class="nav">
-    <a class="logo" href="#"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27C5 13 13 5 27 5c0 14-8 22-22 22z"/><path d="M5 27L18 14"/></svg><span>CalorieAI<i>.</i></span></a>
+    <a class="logo" href="#"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27C5 13 13 5 27 5c0 14-8 22-22 22z"/><path d="M5 27L18 14"/></svg><span>Snap2Nutri<i>.</i></span></a>
     <nav class="menu">
       <a class="link" href="#how">How it works</a>
       <a class="link" href="#about">About</a>
@@ -74,17 +74,17 @@ footer{padding:26px 56px;border-top:1px solid var(--line);font-size:.85rem;color
   </header>
 
   <div class="body">
-    <p class="tag">Image recognition. Indian-food friendly.</p>
+    <p class="tag">Food Calorie Estimator. Indian-food friendly.</p>
     <h1>Snap food.<span>Know calories.</span></h1>
     <p class="sub">Upload a photo of your meal. Our AI names the dish and estimates its calories in seconds.</p>
 
     <div class="card">
-      <p id="status">Loading the AI model… the first visit takes about a minute.</p>
+      <p id="status">Loading the AI model... the first visit takes about a minute.</p>
       <input type="file" id="upload" accept="image/*" disabled>
       <label class="btn off" for="upload" id="pickbtn">Choose a food photo <span aria-hidden="true">↗</span></label>
       <img id="preview" alt="Your uploaded food photo">
       <div id="result" aria-live="polite"></div>
-      <p class="note">Estimates are approximate, for one typical serving.</p>
+      <p class="note">Estimates are approximate, for one typical serving(100g per serving).</p>
     </div>
   </div>
 </section>
@@ -98,7 +98,7 @@ footer{padding:26px 56px;border-top:1px solid var(--line);font-size:.85rem;color
   </ol>
 </section>
 
-<footer id="about">CalorieAI is a mini project. Calories are average values per serving, and real values change with oil, portion size and recipe.</footer>
+<footer id="about">Snap2Nutri is a mini project. Calories are average values per serving, and real values change with oil, portion size and recipe.</footer>
 
 <script type="module">
 import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
