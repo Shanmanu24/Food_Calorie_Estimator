@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CalorieAI – AI Food Calorie Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Lora:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--lime:#c8e66a;--cream:#faf8f1;--ink:#1b1d17;--moss:#3b3f33;--glass:rgba(24,26,20,.74);--line:rgba(255,255,255,.16);
+--display:"Archivo","Arial Black",Impact,sans-serif;--serif:"Lora",Georgia,serif;--mono:"Space Mono","Courier New",monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:var(--serif)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+/* Add your food photo as bg.jpg (same folder as this file). Without it the dark colour shows. */
+.hero{min-height:100vh;display:flex;flex-direction:column;
+background:linear-gradient(rgba(27,29,23,.55),rgba(27,29,23,.85)),url("bg.jpg") center/cover no-repeat,
+radial-gradient(ellipse 60% 45% at 50% 78%,rgba(214,150,40,.3),transparent 70%),var(--moss)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:24px 56px;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:2rem;letter-spacing:-.04em}
+.logo svg{width:34px;height:34px;stroke:var(--lime);fill:none;stroke-width:1.6}
+.logo i{font-style:normal;color:var(--lime)}
+.menu{display:flex;align-items:center;gap:44px}
+.link{font-family:var(--mono);font-weight:700;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.link:hover{color:var(--lime)}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:36px;background:var(--lime);color:var(--ink);padding:20px 28px;border:0;border-radius:3px;
+font-family:var(--mono);font-weight:700;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.btn:hover{background:#d6f07f}
+.btn.off{opacity:.45;pointer-events:none}
+.body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 20px 40px}
+.tag{display:flex;align-items:center;gap:12px;margin:0 0 20px;font-style:italic;font-size:1.45rem}
+.tag:before{content:"";width:11px;height:11px;border-radius:50%;background:var(--lime)}
+h1{margin:0;font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(2.8rem,10.2vw,9rem);line-height:.92;letter-spacing:-.035em;text-transform:uppercase}
+h1 span{display:block;color:var(--lime)}
+.sub{max-width:540px;margin:26px 0 0;font-family:var(--display);font-weight:500;font-size:1.12rem;line-height:1.45;letter-spacing:-.01em}
+.card{width:min(100%,540px);margin:42px auto 0;padding:26px;background:var(--glass);border:1px solid var(--line);border-radius:6px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:left}
+.card input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
+.card label.btn{width:100%}
+#status{margin:0 0 14px;font-style:italic;color:rgba(250,248,241,.8)}
+#preview{display:none;width:100%;max-height:280px;object-fit:cover;margin-top:16px;border-radius:4px}
+#result{margin-top:20px}
+.dish{margin:0;font-family:var(--display);font-weight:900;font-size:1.9rem;letter-spacing:-.02em;text-transform:uppercase}
+.match{margin:4px 0 0;font-style:italic;color:rgba(250,248,241,.72)}
+.cal{margin:10px 0 0;font-family:var(--display);font-weight:900;font-size:4rem;line-height:1;letter-spacing:-.04em;color:var(--lime)}
+.cal small{font-family:var(--mono);font-size:.9rem;letter-spacing:.14em;margin-left:8px}
+.alt{margin:18px 0 6px;font-style:italic;color:rgba(250,248,241,.7);font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:transparent;color:var(--cream);border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-family:var(--mono);font-size:.78rem;cursor:pointer}
+.chip:hover{border-color:var(--lime);color:var(--lime)}
+.note{margin:18px 0 0;font-size:.85rem;color:rgba(250,248,241,.55)}
+.how{padding:84px 56px;background:var(--ink)}
+.how h2{margin:0 0 36px;font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:-.03em;text-transform:uppercase}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;counter-reset:s}
+.steps li{border-top:2px solid var(--lime);padding-top:18px;counter-increment:s}
+.steps li:before{content:"Step " counter(s);font-family:var(--mono);font-size:.8rem;letter-spacing:.14em;color:var(--lime);text-transform:uppercase}
+.steps h3{margin:10px 0 8px;font-family:var(--display);font-weight:800;font-size:1.5rem;letter-spacing:-.02em}
+.steps p{margin:0;line-height:1.6;color:rgba(250,248,241,.75)}
+footer{padding:26px 56px;border-top:1px solid var(--line);font-size:.85rem;color:rgba(250,248,241,.55)}
+@media(max-width:800px){.nav{padding:16px 18px}.link{display:none}.btn{padding:16px 18px;gap:16px}.how{padding:56px 18px}.steps{grid-template-columns:1fr}footer{padding:22px 18px}.tag{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<section class="hero">
+  <header class="nav">
+    <a class="logo" href="#"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27C5 13 13 5 27 5c0 14-8 22-22 22z"/><path d="M5 27L18 14"/></svg><span>CalorieAI<i>.</i></span></a>
+    <nav class="menu">
+      <a class="link" href="#how">How it works</a>
+      <a class="link" href="#about">About</a>
+      <label class="btn off" for="upload" id="navbtn">Upload photo <span aria-hidden="true">↗</span></label>
+    </nav>
+  </header>
+
+  <div class="body">
+    <p class="tag">Image recognition. Indian-food friendly.</p>
+    <h1>Snap food.<span>Know calories.</span></h1>
+    <p class="sub">Upload a photo of your meal. Our AI names the dish and estimates its calories in seconds.</p>
+
+    <div class="card">
+      <p id="status">Loading the AI model… the first visit takes about a minute.</p>
+      <input type="file" id="upload" accept="image/*" disabled>
+      <label class="btn off" for="upload" id="pickbtn">Choose a food photo <span aria-hidden="true">↗</span></label>
+      <img id="preview" alt="Your uploaded food photo">
+      <div id="result" aria-live="polite"></div>
+      <p class="note">Estimates are approximate, for one typical serving.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <h2>Three steps. No typing.</h2>
+  <ol class="steps">
+    <li><h3>Upload your photo</h3><p>Pick a picture of your meal from your phone or computer.</p></li>
+    <li><h3>The AI names the dish</h3><p>The model runs in your browser and compares your photo with every dish in our list, including chapati, dosa and biryani.</p></li>
+    <li><h3>See the calories</h3><p>You get the calories for one typical serving, plus the next closest guesses. Tap a guess if the first one is wrong.</p></li>
+  </ol>
+</section>
+
+<footer id="about">CalorieAI is a mini project. Calories are average values per serving, and real values change with oil, portion size and recipe.</footer>
+
+<script type="module">
+import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
+env.allowLocalModels = false;
+
+/* Approximate kcal per typical serving. Add more dishes in the same format. */
+const CAL = {
+ "chapati / roti":100,"tandoori roti":120,"missi roti":150,"plain paratha":200,"aloo paratha":290,"paneer paratha":320,"naan":260,"butter naan":310,"kulcha":260,"puri (2 pcs)":200,"bhatura":250,"thepla":120,
+ "idli (2 pcs)":120,"plain dosa":130,"masala dosa":250,"rava dosa":190,"medu vada (2 pcs)":200,"upma (1 cup)":190,"pongal (1 cup)":240,"uttapam":190,"pesarattu":150,"appam":120,"idiyappam":120,"puttu":200,"sambar (1 bowl)":130,"rasam (1 bowl)":60,"avial":150,"curd rice":250,"lemon rice":250,"bisi bele bath":300,
+ "plain rice (1 cup)":200,"jeera rice":230,"veg pulao":250,"veg biryani":350,"chicken biryani":450,"mutton biryani":500,"egg biryani":400,"khichdi":200,"sabudana khichdi":350,
+ "dal tadka":180,"dal makhani":280,"dal fry":170,"rajma":220,"chole":270,"chole bhature":500,"palak paneer":280,"paneer butter masala":350,"kadai paneer":320,"shahi paneer":380,"matar paneer":300,"aloo gobi":150,"aloo matar":180,"bhindi masala":120,"baingan bharta":130,"mix veg curry":150,"malai kofta":400,"sarson ka saag":150,"kadhi pakora":250,"litti chokha":300,
+ "butter chicken":400,"chicken curry":300,"chicken tikka masala":380,"tandoori chicken (2 pcs)":260,"chicken tikka (6 pcs)":200,"mutton curry":350,"rogan josh":380,"fish curry":250,"fish fry":250,"prawn masala":230,"egg curry":220,"boiled egg":78,"masala omelette":150,"haleem":350,"chicken 65":300,"keema":300,
+ "samosa":260,"pakora (5 pcs)":200,"vada pav":290,"pav bhaji":400,"misal pav":450,"pani puri (6 pcs)":180,"bhel puri":250,"sev puri":250,"dahi puri":220,"aloo tikki":200,"dahi vada":180,"kachori":280,"dhokla (2 pcs)":160,"khandvi":150,"poha (1 cup)":180,"momos (5 pcs)":200,"veg manchurian":300,"hakka noodles":400,"maggi (1 pack)":350,
+ "gulab jamun (2 pcs)":300,"jalebi (2 pcs)":300,"rasgulla (2 pcs)":250,"rasmalai (2 pcs)":300,"kheer":250,"gajar halwa":300,"suji halwa":280,"besan ladoo":180,"motichoor ladoo":190,"kaju katli (2 pcs)":100,"barfi":150,"kulfi":200,"sweet lassi":200,"salted lassi":120,"buttermilk (chaas)":40,"masala chai":100,"raita":70,
+ "pizza":285,"cheeseburger":303,"hotdog":290,"french fries":365,"sandwich":250,"pasta":350,"ice cream":210,"banana":105,"orange":62,"apple":95,"strawberry":50,"pineapple":82,"broccoli":55,"cucumber":16
+};
+const DISHES = Object.keys(CAL).map(name => ({
+  name,
+  label: name.replace(/\s*\(.*?\)/g, "").replace(" / ", " or ")   // text the AI compares with the photo
+}));
+const LABELS = DISHES.map(d => d.label);
+
+const $ = id => document.getElementById(id);
+const status = $("status"), upload = $("upload"), preview = $("preview"), result = $("result");
+let classifier;
+
+function showDish(d, conf) {
+  const kcal = CAL[d.name];
+  result.innerHTML = '<p class="dish"></p><p class="match"></p><p class="cal">≈ ' + kcal + '<small>KCAL</small></p><div id="alts"></div>';
+  result.querySelector(".dish").textContent = d.label;
+  result.querySelector(".match").textContent = conf;
+}
+
+function render(top, i) {
+  showDish(top[i].d, top[i].pct + "% match");
+  const alts = $("alts");
+  alts.innerHTML = '<p class="alt">Not right? Tap another guess:</p><div class="chips"></div>';
+  top.forEach((t, j) => {
+    if (j === i) return;
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.textContent = t.d.label + " (" + t.pct + "%)";
+    b.addEventListener("click", () => render(top, j));
+    alts.querySelector(".chips").appendChild(b);
+  });
+}
+
+try {
+  classifier = await pipeline("zero-shot-image-classification", "Xenova/clip-vit-base-patch32", {
+    progress_callback: p => {
+      if (p.status === "progress" && p.file && p.file.endsWith(".onnx")) {
+        status.textContent = "Loading the AI model… " + Math.round(p.progress) + "%";
+      }
+    }
+  });
+  status.textContent = "AI ready. Upload a food photo.";
+  upload.disabled = false;
+  $("pickbtn").classList.remove("off");
+  $("navbtn").classList.remove("off");
+} catch (e) {
+  status.textContent = "The AI model could not load. Check your internet connection and refresh the page.";
+}
+
+upload.addEventListener("change", async () => {
+  const file = upload.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  preview.src = url;
+  preview.style.display = "block";
+  result.innerHTML = '<p class="match">Analysing your photo…</p>';
+  try {
+    const out = await classifier(url, LABELS, { hypothesis_template: "a photo of {}, a food dish." });
+    const top = out.slice(0, 3).map(o => ({ d: DISHES[LABELS.indexOf(o.label)], pct: Math.round(o.score * 100) }));
+    render(top, 0);
+  } catch (e) {
+    result.innerHTML = '<p class="match">Something went wrong reading this photo. Try another image.</p>';
+  }
+});
+</script>
+</body>
+</html>
